@@ -1,20 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+	ApolloClient,
+	createHttpLink,
+	ApolloProvider,
+	InMemoryCache,
+} from '@apollo/client'
+import { StatusBar } from 'expo-status-bar'
+import { setContext } from '@apollo/client/link/context'
+import { getUser } from './src/utils/user'
+import Router from './src/navigation/Router'
+import AuthProvider from './src/utils/AuthContext'
+
+const httpLink = createHttpLink({
+	uri: 'http://localhost:4000/graphql',
+})
+
+const authLink = setContext(async (_, { headers }) => {
+	// get the authentication token from local storage if it exists
+	const token = await getUser()
+	// return the headers to the context so httpLink can read them
+	return {
+		headers: {
+			...headers,
+			authorization: token ? `Bearer ${token}` : '',
+		},
+	}
+})
+
+const client = new ApolloClient({
+	link: authLink.concat(httpLink),
+	credentials: 'include',
+	cache: new InMemoryCache(),
+})
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	return (
+		<ApolloProvider client={client}>
+			<AuthProvider>
+				<Router />
+				<StatusBar style="auto" />
+			</AuthProvider>
+		</ApolloProvider>
+	)
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
