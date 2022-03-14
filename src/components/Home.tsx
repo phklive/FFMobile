@@ -1,10 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { Text } from 'react-native'
 import { View } from 'react-native'
 
-interface HomeProps {}
-
-const Home: React.FC<HomeProps> = () => {
+const Home: React.FC = () => {
 	return (
 		<View>
 			<Text>Home page lol</Text>

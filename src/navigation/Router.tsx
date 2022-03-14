@@ -7,7 +7,7 @@ export const Router = () => {
 
 	return (
 		<NavigationContainer>
-			{token ? <AuthStack /> : <AppStack />}
+			{token ? <AppStack /> : <AuthStack />}
 		</NavigationContainer>
 	)
 }

@@ -6,18 +6,24 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RouteParams } from '../navigation/Stack'
 import useAuth from '../utils/useAuth'
-import { useLoginUserMutation } from '../generated/graphql'
+import { useCreateUserMutation } from '../generated/graphql'
 
-const SignIn: React.FC = () => {
+const SignUp: React.FC = () => {
 	const navigation = useNavigation<NativeStackNavigationProp<RouteParams>>()
-	const [signInMutation] = useLoginUserMutation()
+	const [signUpMutation] = useCreateUserMutation()
 	const { signIn } = useAuth()
 
-	const loginHandler = async (email: string, password: string) => {
+	const signUpHandler = async (
+		name: string,
+		email: string,
+		password: string
+	) => {
 		try {
-			const token = await signInMutation({ variables: { email, password } })
-			signIn(token.data?.loginUser as string)
-			Alert.alert('Successfully logged in.')
+			const token = await signUpMutation({
+				variables: { name, email, password },
+			})
+			signIn(token.data?.createUser as string)
+			Alert.alert('Successfully signed up.')
 		} catch (e: any) {
 			Alert.alert(e.message)
 		}
@@ -25,21 +31,38 @@ const SignIn: React.FC = () => {
 
 	const formik = useFormik({
 		initialValues: {
+			name: '',
 			email: '',
 			password: '',
 		},
 		validationSchema: Yup.object({
+			name: Yup.string()
+				.min(3, 'Must be longer than 3 characters.')
+				.max(20, 'Must not be longer than 20 characters.')
+				.required('Name is required.'),
 			email: Yup.string().min(3, 'must be long').required('Email is required.'),
 			password: Yup.string().required('Password is required.'),
 		}),
 		onSubmit: values => {
-			loginHandler(values.email, values.password)
+			signUpHandler(values.name, values.email, values.password)
 		},
 	})
 
 	return (
 		<View style={styles.container}>
-			<Text style={{ textAlign: 'center', fontSize: 30 }}>Sign in</Text>
+			<Text style={{ textAlign: 'center', fontSize: 30 }}>Sign up</Text>
+			<View>
+				<Text>Name:</Text>
+				<TextInput
+					style={styles.textInput}
+					placeholder="Enter your name"
+					onChangeText={formik.handleChange('name')}
+					onBlur={formik.handleBlur('name')}
+					value={formik.values.name}
+					autoCapitalize="none"
+				/>
+			</View>
+
 			<View>
 				<Text>Email:</Text>
 				<TextInput
@@ -64,21 +87,26 @@ const SignIn: React.FC = () => {
 			</View>
 
 			<Text style={styles.question}>
-				Don't have an account?
-				<Text onPress={() => navigation.navigate('SignUp')}> Sign up.</Text>
+				Already have an account?
+				<Text
+					onPress={() => navigation.navigate('SignIn')}
+					style={styles.questionLink}
+				>
+					{' '}
+					Sign in.
+				</Text>
 			</Text>
-
 			<Button
 				onPress={() => {
 					formik.handleSubmit()
 				}}
-				title="Sign in"
+				title="Sign up"
 			/>
 		</View>
 	)
 }
 
-export default SignIn
+export default SignUp
 
 const styles = StyleSheet.create({
 	container: {
@@ -91,6 +119,7 @@ const styles = StyleSheet.create({
 		fontSize: 17,
 		textAlign: 'center',
 	},
+	questionLink: {},
 	textInput: {
 		backgroundColor: 'white',
 		borderWidth: 2,

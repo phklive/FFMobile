@@ -1,9 +1,7 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-interface SearchProps {}
-
-const Search: React.FC<SearchProps> = ({}) => {
+const Search: React.FC = () => {
 	return (
 		<View>
 			<Text>Search page!</Text>
