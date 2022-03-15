@@ -2,11 +2,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import Home from '../components/Home'
-import Profile from '../components/Profile'
-import Search from '../components/Search'
-import SignIn from '../components/SignIn'
-import SignUp from '../components/SignUp'
+import Home from '../screens/Home'
+import Profile from '../screens/Profile'
+import Search from '../screens/Search'
+import SignIn from '../screens/SignIn'
+import SignUp from '../screens/SignUp'
+import Splash from '../screens/Splash'
 
 export type RouteParams = {
 	Home: undefined
@@ -14,6 +15,7 @@ export type RouteParams = {
 	Search: undefined
 	SignIn: undefined
 	SignUp: undefined
+	Splash: undefined
 }
 
 const Tab = createBottomTabNavigator<RouteParams>()
@@ -23,11 +25,8 @@ export const AppStack: React.FC = () => {
 	return (
 		<Tab.Navigator
 			screenOptions={({ route }) => ({
-				headerStyle: {
-					height: 50,
-				},
-				headerShown: true,
-				headerTitle: '',
+				headerShown: false,
+				headerLeft: () => null,
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName
 					if (route.name === 'Home') {
@@ -57,8 +56,18 @@ export const AppStack: React.FC = () => {
 
 export const AuthStack: React.FC = () => {
 	return (
-		<Stack.Navigator>
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false,
+				headerLeft: () => null,
+				cardStyle: {
+					backgroundColor: 'blue',
+					paddingTop: 50,
+				},
+			}}
+		>
 			<Stack.Group>
+				<Stack.Screen name="Splash" component={Splash} />
 				<Stack.Screen name="SignIn" component={SignIn} />
 				<Stack.Screen name="SignUp" component={SignUp} />
 			</Stack.Group>

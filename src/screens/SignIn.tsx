@@ -39,7 +39,7 @@ const SignIn: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={{ textAlign: 'center', fontSize: 30 }}>Sign in</Text>
+			<Text>Sign in</Text>
 			<View>
 				<Text>Email:</Text>
 				<TextInput

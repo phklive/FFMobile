@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import useAuth from '../utils/useAuth'
 import { AppStack, AuthStack } from './Stack'
 
