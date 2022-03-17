@@ -4,13 +4,17 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RouteParams } from '../navigation/Stack'
+import tw from 'twrnc'
 import useAuth from '../utils/useAuth'
 import { useLoginUserMutation } from '../generated/graphql'
+import { AuthParams } from '../navigation/Stack'
+import Spacer from '../ui/Spacer'
+import ButtonUI from '../ui/ButtonUI'
+import Spinner from '../ui/Spinner'
 
 const SignIn: React.FC = () => {
-	const navigation = useNavigation<NativeStackNavigationProp<RouteParams>>()
-	const [signInMutation] = useLoginUserMutation()
+	const navigation = useNavigation<NativeStackNavigationProp<AuthParams>>()
+	const [signInMutation, { loading }] = useLoginUserMutation()
 	const { signIn } = useAuth()
 
 	const loginHandler = async (email: string, password: string) => {
@@ -38,77 +42,52 @@ const SignIn: React.FC = () => {
 	})
 
 	return (
-		<View style={styles.container}>
-			<Text>Sign in</Text>
-			<View>
-				<Text>Email:</Text>
+		<View
+			style={[
+				tw`flex-1 justify-center`,
+				{ backgroundColor: 'rgba(240,238,243,255)' },
+			]}
+		>
+			<Text style={tw`text-center text-4xl mb-4`}>Hello Again!</Text>
+			<Text style={tw`text-center text-xl mb-10`}>
+				Welcome back you've{'\n'}been missed!
+			</Text>
+			<View style={tw`flex flex-col `}>
 				<TextInput
-					style={styles.textInput}
-					placeholder="Enter your email"
+					style={tw`self-center bg-white rounded py-4 px-2 my-2 w-10/12`}
+					placeholder="Enter email"
 					onChangeText={formik.handleChange('email')}
 					onBlur={formik.handleBlur('email')}
 					value={formik.values.email}
 					autoCapitalize="none"
 				/>
-			</View>
-			<View>
-				<Text>Password:</Text>
 				<TextInput
-					style={styles.textInput}
+					style={tw`self-center bg-white rounded py-4 px-2 my-2 w-10/12`}
 					placeholder="Enter your password"
 					onChangeText={formik.handleChange('password')}
 					onBlur={formik.handleBlur('password')}
 					value={formik.values.password}
 					autoCapitalize="none"
 				/>
+				<Text style={tw`ml-8 mt-2 text-base`}>Forgot your password?</Text>
+				{loading ? (
+					<Spinner />
+				) : (
+					<ButtonUI onPress={() => formik.handleSubmit()} text="Sign in" />
+				)}
 			</View>
-
-			<Text style={styles.question}>
+			<Text style={tw`ml-8 text-base`}>
 				Don't have an account?
-				<Text onPress={() => navigation.navigate('SignUp')}> Sign up.</Text>
+				<Text
+					style={tw`text-blue-500`}
+					onPress={() => navigation.navigate('SignUp')}
+				>
+					{' '}
+					Register now.
+				</Text>
 			</Text>
-
-			<Button
-				onPress={() => {
-					formik.handleSubmit()
-				}}
-				title="Sign in"
-			/>
 		</View>
 	)
 }
 
 export default SignIn
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: 'gray',
-		padding: 5,
-		margin: 5,
-		borderRadius: 10,
-	},
-	question: {
-		fontSize: 17,
-		textAlign: 'center',
-	},
-	textInput: {
-		backgroundColor: 'white',
-		borderWidth: 2,
-		borderColor: 'black',
-		padding: 5,
-		marginVertical: 5,
-		borderRadius: 20,
-		fontSize: 20,
-	},
-	button: {
-		textAlign: 'center',
-		borderWidth: 2,
-		padding: 4,
-		marginTop: 10,
-		borderRadius: 10,
-		borderColor: 'black',
-		backgroundColor: 'white',
-		color: 'black',
-		fontSize: 20,
-	},
-})

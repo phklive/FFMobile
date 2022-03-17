@@ -1,13 +1,21 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import useAuth from '../utils/useAuth'
-import { AppStack, AuthStack } from './Stack'
+import { Auth, App } from './Stack'
+
+const MyTheme = {
+	...DefaultTheme,
+	colors: {
+		...DefaultTheme.colors,
+		background: 'rgba(239,235,241,255)',
+	},
+}
 
 export const Router = () => {
 	const { token } = useAuth()
 
 	return (
-		<NavigationContainer>
-			{token ? <AppStack /> : <AuthStack />}
+		<NavigationContainer theme={MyTheme}>
+			{token ? <App /> : <Auth />}
 		</NavigationContainer>
 	)
 }

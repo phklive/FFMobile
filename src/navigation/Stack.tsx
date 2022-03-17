@@ -8,69 +8,104 @@ import Search from '../screens/Search'
 import SignIn from '../screens/SignIn'
 import SignUp from '../screens/SignUp'
 import Splash from '../screens/Splash'
+import Header from '../ui/Header'
+import Feed from '../screens/Feed'
+import Products from '../screens/Products'
+import Tinder from '../screens/Tinder'
 
-export type RouteParams = {
-	Home: undefined
+export type AppParams = {
+	HomeStack: undefined
 	Profile: undefined
-	Search: undefined
-	SignIn: undefined
-	SignUp: undefined
-	Splash: undefined
+	Tinder: undefined
 }
 
-const Tab = createBottomTabNavigator<RouteParams>()
-const Stack = createStackNavigator<RouteParams>()
+export type HomeStackParams = {
+	Home: undefined
+	Feed: undefined
+	Products: undefined
+}
 
-export const AppStack: React.FC = () => {
+export type AuthParams = {
+	Splash: undefined
+	SignIn: undefined
+	SignUp: undefined
+}
+
+const AppNav = createBottomTabNavigator<AppParams>()
+const HomeNav = createStackNavigator<HomeStackParams>()
+const AuthNav = createStackNavigator<AuthParams>()
+
+const HomeStack: React.FC = () => (
+	<HomeNav.Navigator
+		screenOptions={{
+			headerShown: false,
+		}}
+	>
+		<HomeNav.Screen name="Home" component={Home} />
+		<HomeNav.Screen name="Feed" component={Feed} />
+		<HomeNav.Screen name="Products" component={Products} />
+	</HomeNav.Navigator>
+)
+
+export const App: React.FC = () => {
 	return (
-		<Tab.Navigator
-			screenOptions={({ route }) => ({
-				headerShown: false,
-				headerLeft: () => null,
-				tabBarIcon: ({ focused, color, size }) => {
-					let iconName
-					if (route.name === 'Home') {
-						iconName = focused ? 'home-outline' : 'home-outline'
-					} else if (route.name === 'Profile') {
-						iconName = focused ? 'person-outline' : 'person-outline'
-					} else if (route.name === 'Search') {
-						iconName = focused ? 'search-outline' : 'search-outline'
-					} else if (route.name === 'SignIn') {
-						iconName = focused ? 'person-add-outline' : 'person-add-outline'
-					}
-					return <Ionicons name={iconName as any} size={size} color={color} />
-				},
-				tabBarStyle: { backgroundColor: 'black' },
-				tabBarActiveTintColor: 'white',
-				tabBarInactiveTintColor: 'gray',
-			})}
-		>
-			<Tab.Group>
-				<Tab.Screen name="Home" component={Home} />
-				<Tab.Screen name="Profile" component={Profile} />
-				<Tab.Screen name="Search" component={Search} />
-			</Tab.Group>
-		</Tab.Navigator>
+		<>
+			<Header />
+			<AppNav.Navigator
+				screenOptions={({ route }) => ({
+					headerShown: false,
+					headerLeft: () => null,
+					tabBarIcon: ({ focused, color, size }) => {
+						let iconName
+						if (route.name === 'HomeStack') {
+							iconName = focused ? 'home-outline' : 'home-outline'
+						} else if (route.name === 'Profile') {
+							iconName = focused ? 'person-outline' : 'person-outline'
+						} else if (route.name === 'Tinder') {
+							iconName = focused ? 'search-outline' : 'search-outline'
+						} else if (route.name === 'SignIn') {
+							iconName = focused ? 'person-add-outline' : 'person-add-outline'
+						}
+						return <Ionicons name={iconName as any} size={size} color={color} />
+					},
+					tabBarStyle: {
+						backgroundColor: '#2b2d42',
+						borderTopColor: '#2b2d42',
+					},
+					tabBarActiveTintColor: '#edf2f4',
+					tabBarInactiveTintColor: '#8d99ae',
+				})}
+			>
+				<AppNav.Group>
+					<AppNav.Screen
+						name="HomeStack"
+						component={HomeStack}
+						options={{ title: 'Home' }}
+					/>
+					<AppNav.Screen name="Tinder" component={Tinder} />
+					<AppNav.Screen name="Profile" component={Profile} />
+				</AppNav.Group>
+			</AppNav.Navigator>
+		</>
 	)
 }
 
-export const AuthStack: React.FC = () => {
+export const Auth: React.FC = () => {
 	return (
-		<Stack.Navigator
-			screenOptions={{
-				headerShown: false,
-				headerLeft: () => null,
-				cardStyle: {
-					backgroundColor: 'blue',
-					paddingTop: 50,
-				},
-			}}
-		>
-			<Stack.Group>
-				<Stack.Screen name="Splash" component={Splash} />
-				<Stack.Screen name="SignIn" component={SignIn} />
-				<Stack.Screen name="SignUp" component={SignUp} />
-			</Stack.Group>
-		</Stack.Navigator>
+		<>
+			<Header />
+			<AuthNav.Navigator
+				screenOptions={{
+					headerShown: false,
+					headerLeft: () => null,
+				}}
+			>
+				<AuthNav.Group>
+					<AuthNav.Screen name="Splash" component={Splash} />
+					<AuthNav.Screen name="SignIn" component={SignIn} />
+					<AuthNav.Screen name="SignUp" component={SignUp} />
+				</AuthNav.Group>
+			</AuthNav.Navigator>
+		</>
 	)
 }

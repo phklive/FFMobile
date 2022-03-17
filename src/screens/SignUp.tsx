@@ -1,15 +1,17 @@
 import React from 'react'
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native'
+import tw from 'twrnc'
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native'
+import ButtonUI from '../ui/ButtonUI'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RouteParams } from '../navigation/Stack'
 import useAuth from '../utils/useAuth'
 import { useCreateUserMutation } from '../generated/graphql'
+import { AuthParams } from '../navigation/Stack'
 
 const SignUp: React.FC = () => {
-	const navigation = useNavigation<NativeStackNavigationProp<RouteParams>>()
+	const navigation = useNavigation<NativeStackNavigationProp<AuthParams>>()
 	const [signUpMutation] = useCreateUserMutation()
 	const { signIn } = useAuth()
 
@@ -49,59 +51,57 @@ const SignUp: React.FC = () => {
 	})
 
 	return (
-		<View style={styles.container}>
-			<Text style={{ textAlign: 'center', fontSize: 30 }}>Sign up</Text>
-			<View>
-				<Text>Name:</Text>
+		<View
+			style={[
+				tw`flex-1 justify-center`,
+				{ backgroundColor: 'rgba(240,238,243,255)' },
+			]}
+		>
+			<Text style={tw`text-center text-4xl mb-4`}>
+				Welcome to{'\n'}FiftyFiftys!
+			</Text>
+			<Text style={tw`text-center text-xl mb-10`}>
+				We are glad to meet you!
+			</Text>
+			<View style={tw`flex flex-col `}>
 				<TextInput
-					style={styles.textInput}
-					placeholder="Enter your name"
+					style={tw`self-center bg-white rounded py-4 px-2 my-2 w-10/12`}
+					placeholder="Enter name"
 					onChangeText={formik.handleChange('name')}
 					onBlur={formik.handleBlur('name')}
 					value={formik.values.name}
 					autoCapitalize="none"
 				/>
-			</View>
 
-			<View>
-				<Text>Email:</Text>
 				<TextInput
-					style={styles.textInput}
-					placeholder="Enter your email"
+					style={tw`self-center bg-white rounded py-4 px-2 my-2 w-10/12`}
+					placeholder="Enter email"
 					onChangeText={formik.handleChange('email')}
 					onBlur={formik.handleBlur('email')}
 					value={formik.values.email}
 					autoCapitalize="none"
 				/>
-			</View>
-			<View>
-				<Text>Password:</Text>
+
 				<TextInput
-					style={styles.textInput}
+					style={tw`self-center bg-white rounded py-4 px-2 my-2 w-10/12`}
 					placeholder="Enter your password"
 					onChangeText={formik.handleChange('password')}
 					onBlur={formik.handleBlur('password')}
 					value={formik.values.password}
 					autoCapitalize="none"
 				/>
+				<ButtonUI onPress={() => formik.handleSubmit()} text="Register" />
 			</View>
-
-			<Text style={styles.question}>
+			<Text style={tw`ml-8 text-base`}>
 				Already have an account?
 				<Text
+					style={tw`text-blue-500`}
 					onPress={() => navigation.navigate('SignIn')}
-					style={styles.questionLink}
 				>
 					{' '}
-					Sign in.
+					Sign In.
 				</Text>
 			</Text>
-			<Button
-				onPress={() => {
-					formik.handleSubmit()
-				}}
-				title="Sign up"
-			/>
 		</View>
 	)
 }
