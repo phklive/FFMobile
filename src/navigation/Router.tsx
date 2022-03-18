@@ -15,7 +15,7 @@ export const Router = () => {
 
 	return (
 		<NavigationContainer theme={MyTheme}>
-			{token ? <App /> : <Auth />}
+			{token ? <App /> : <App />}
 		</NavigationContainer>
 	)
 }

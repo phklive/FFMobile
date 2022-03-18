@@ -1,13 +1,19 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import FFHeader from '../ui/FFHeader'
 import React from 'react'
-import { View, Text } from 'react-native'
+import ProductList from '../components/ProductList'
+import SearchBar from '../components/SearchBar'
+import { HomeStackParams } from '../navigation/Stack'
 
-interface ProductsProps {}
+type ProductsProps = NativeStackScreenProps<HomeStackParams, 'Products'>
 
 const Products: React.FC<ProductsProps> = ({}) => {
 	return (
-		<View>
-			<Text>Products</Text>
-		</View>
+		<>
+			<FFHeader version="back" />
+			<SearchBar />
+			<ProductList />
+		</>
 	)
 }
 

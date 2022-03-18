@@ -16,10 +16,10 @@ const Category: React.FC<CategoryProps> = ({ title, image }) => {
 	return (
 		<Pressable
 			style={[
-				tw`flex flex-row rounded-full p-2 mr-4 items-center`,
+				tw`flex flex-row rounded p-2 mr-4 items-center`,
 				{ backgroundColor: '#8d99ae' },
 			]}
-			onPress={() => navigation.navigate('Products')}
+			onPress={() => navigation.navigate('Products', { search: title })}
 		>
 			<Ionicons name={image as any} size={24} color="#2b2d42" />
 			<Text style={[tw`ml-2 text-xl`, { color: '#2b2d42' }]}>{title}</Text>

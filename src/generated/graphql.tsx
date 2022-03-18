@@ -15,17 +15,54 @@ export type Scalars = {
   Float: number;
 };
 
+export type Game = {
+  __typename?: 'Game';
+  id: Scalars['String'];
+  players?: Maybe<Array<User>>;
+  product: Product;
+  slots: Scalars['Int'];
+};
+
+export type InputGame = {
+  id: Scalars['String'];
+  players?: InputMaybe<Array<InputUser>>;
+  product: InputProduct;
+  slots: Scalars['Int'];
+};
+
+export type InputProduct = {
+  description: Scalars['String'];
+  id: Scalars['String'];
+  image: Scalars['String'];
+  price: Scalars['Int'];
+  title: Scalars['String'];
+};
+
+export type InputUser = {
+  email: Scalars['String'];
+  games?: InputMaybe<Array<InputGame>>;
+  id: Scalars['String'];
+  likes?: InputMaybe<Array<InputGame>>;
+  name: Scalars['String'];
+  password: Scalars['String'];
+  points: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  createPost: Post;
+  createGame: Product;
   createUser: Scalars['String'];
-  loginUser: Scalars['String'];
+  joinGame: Game;
+  like: Game;
+  play: Game;
+  signInUser: Scalars['String'];
 };
 
 
-export type MutationCreatePostArgs = {
-  body: Scalars['String'];
-  title: Scalars['String'];
+export type MutationCreateGameArgs = {
+  players?: InputMaybe<Array<InputUser>>;
+  product: InputProduct;
+  slots: Scalars['Int'];
 };
 
 
@@ -36,35 +73,83 @@ export type MutationCreateUserArgs = {
 };
 
 
-export type MutationLoginUserArgs = {
+export type MutationJoinGameArgs = {
+  gameId: Scalars['String'];
+  gameType: Scalars['String'];
+};
+
+
+export type MutationLikeArgs = {
+  gameId: Scalars['String'];
+};
+
+
+export type MutationPlayArgs = {
+  gameId: Scalars['String'];
+};
+
+
+export type MutationSignInUserArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
 
-export type Post = {
-  __typename?: 'Post';
-  authorId: Scalars['String'];
-  body: Scalars['String'];
+export type Product = {
+  __typename?: 'Product';
+  description: Scalars['String'];
   id: Scalars['String'];
+  image: Scalars['String'];
+  price: Scalars['Int'];
   title: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  post?: Maybe<Post>;
-  posts: Array<Post>;
-  user?: Maybe<User>;
-  userPosts?: Maybe<Array<Post>>;
+  game: Game;
+  games: Array<Game>;
+  me?: Maybe<User>;
+  product: Product;
+  products: Array<Product>;
+  user: User;
+  userGames?: Maybe<Array<Game>>;
+  userLikes?: Maybe<Array<Game>>;
   users: Array<User>;
+};
+
+
+export type QueryGameArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryProductArgs = {
+  productId: Scalars['String'];
+};
+
+
+export type QueryUserArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type QueryUserGamesArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type QueryUserLikesArgs = {
+  userId: Scalars['String'];
 };
 
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
+  games?: Maybe<Array<Game>>;
   id: Scalars['String'];
+  likes?: Maybe<Array<Game>>;
   name: Scalars['String'];
   password: Scalars['String'];
-  posts?: Maybe<Array<Maybe<Post>>>;
+  points: Scalars['Int'];
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -76,23 +161,30 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: string };
 
-export type LoginUserMutationVariables = Exact<{
+export type SignInUserMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
 }>;
 
 
-export type LoginUserMutation = { __typename?: 'Mutation', loginUser: string };
+export type SignInUserMutation = { __typename?: 'Mutation', signInUser: string };
 
-export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: string, title: string, body: string, authorId: string }> };
-
-export type UserQueryVariables = Exact<{ [key: string]: never; }>;
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, email: string, name: string } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, name: string, email: string, password: string, points: number } | null };
+
+export type ProductQueryVariables = Exact<{
+  productId: Scalars['String'];
+}>;
+
+
+export type ProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: string, title: string, description: string, image: string, price: number } };
+
+export type ProductsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description: string, image: string, price: number }> };
 
 
 export const CreateUserDocument = gql`
@@ -128,108 +220,150 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
-export const LoginUserDocument = gql`
-    mutation LoginUser($email: String!, $password: String!) {
-  loginUser(email: $email, password: $password)
+export const SignInUserDocument = gql`
+    mutation SignInUser($email: String!, $password: String!) {
+  signInUser(email: $email, password: $password)
 }
     `;
-export type LoginUserMutationFn = Apollo.MutationFunction<LoginUserMutation, LoginUserMutationVariables>;
+export type SignInUserMutationFn = Apollo.MutationFunction<SignInUserMutation, SignInUserMutationVariables>;
 
 /**
- * __useLoginUserMutation__
+ * __useSignInUserMutation__
  *
- * To run a mutation, you first call `useLoginUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSignInUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignInUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [loginUserMutation, { data, loading, error }] = useLoginUserMutation({
+ * const [signInUserMutation, { data, loading, error }] = useSignInUserMutation({
  *   variables: {
  *      email: // value for 'email'
  *      password: // value for 'password'
  *   },
  * });
  */
-export function useLoginUserMutation(baseOptions?: Apollo.MutationHookOptions<LoginUserMutation, LoginUserMutationVariables>) {
+export function useSignInUserMutation(baseOptions?: Apollo.MutationHookOptions<SignInUserMutation, SignInUserMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginUserMutation, LoginUserMutationVariables>(LoginUserDocument, options);
+        return Apollo.useMutation<SignInUserMutation, SignInUserMutationVariables>(SignInUserDocument, options);
       }
-export type LoginUserMutationHookResult = ReturnType<typeof useLoginUserMutation>;
-export type LoginUserMutationResult = Apollo.MutationResult<LoginUserMutation>;
-export type LoginUserMutationOptions = Apollo.BaseMutationOptions<LoginUserMutation, LoginUserMutationVariables>;
-export const PostsDocument = gql`
-    query Posts {
-  posts {
+export type SignInUserMutationHookResult = ReturnType<typeof useSignInUserMutation>;
+export type SignInUserMutationResult = Apollo.MutationResult<SignInUserMutation>;
+export type SignInUserMutationOptions = Apollo.BaseMutationOptions<SignInUserMutation, SignInUserMutationVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    name
+    email
+    password
+    points
+  }
+}
+    `;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const ProductDocument = gql`
+    query Product($productId: String!) {
+  product(productId: $productId) {
     id
     title
-    body
-    authorId
+    description
+    image
+    price
   }
 }
     `;
 
 /**
- * __usePostsQuery__
+ * __useProductQuery__
  *
- * To run a query within a React component, call `usePostsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProductQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePostsQuery({
+ * const { data, loading, error } = useProductQuery({
  *   variables: {
+ *      productId: // value for 'productId'
  *   },
  * });
  */
-export function usePostsQuery(baseOptions?: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
+export function useProductQuery(baseOptions: Apollo.QueryHookOptions<ProductQuery, ProductQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, options);
+        return Apollo.useQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
       }
-export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostsQuery, PostsQueryVariables>) {
+export function useProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductQuery, ProductQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PostsQuery, PostsQueryVariables>(PostsDocument, options);
+          return Apollo.useLazyQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
         }
-export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
-export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
-export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
-export const UserDocument = gql`
-    query User {
-  user {
+export type ProductQueryHookResult = ReturnType<typeof useProductQuery>;
+export type ProductLazyQueryHookResult = ReturnType<typeof useProductLazyQuery>;
+export type ProductQueryResult = Apollo.QueryResult<ProductQuery, ProductQueryVariables>;
+export const ProductsDocument = gql`
+    query Products {
+  products {
     id
-    email
-    name
+    title
+    description
+    image
+    price
   }
 }
     `;
 
 /**
- * __useUserQuery__
+ * __useProductsQuery__
  *
- * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUserQuery({
+ * const { data, loading, error } = useProductsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useUserQuery(baseOptions?: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useProductsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        return Apollo.useQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
       }
-export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+          return Apollo.useLazyQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
         }
-export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
-export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
-export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
+export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
+export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;

@@ -1,11 +1,24 @@
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React from 'react'
-import { Text, View, Image } from 'react-native'
+import { Text, View, Image, Pressable } from 'react-native'
 import tw from 'twrnc'
-import { product } from '../types'
+import { Product } from '../generated/graphql'
+import { HomeStackParams } from '../navigation/Stack'
 
-const Product: React.FC<product> = ({ image, price, title }) => {
+const ProductItem: React.FC<Product> = ({
+	image,
+	price,
+	title,
+	description,
+}) => {
+	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
+
 	return (
-		<View style={tw`flex flex-col flex-1 items-center mb-4`}>
+		<Pressable
+			style={tw`flex flex-col items-center mx-auto my-3`}
+			onPress={() => navigation.navigate('Product', { name: title })}
+		>
 			<Image
 				source={{
 					uri: `${image}`,
@@ -14,8 +27,8 @@ const Product: React.FC<product> = ({ image, price, title }) => {
 			/>
 			<Text style={tw`mt-2 font-bold`}>{`$${price}`}</Text>
 			<Text style={tw`text-xl font-bold`}>{title}</Text>
-		</View>
+		</Pressable>
 	)
 }
 
-export default Product
+export default ProductItem

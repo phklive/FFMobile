@@ -4,7 +4,6 @@ import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import Home from '../screens/Home'
 import Profile from '../screens/Profile'
-import Search from '../screens/Search'
 import SignIn from '../screens/SignIn'
 import SignUp from '../screens/SignUp'
 import Splash from '../screens/Splash'
@@ -12,6 +11,7 @@ import Header from '../ui/Header'
 import Feed from '../screens/Feed'
 import Products from '../screens/Products'
 import Tinder from '../screens/Tinder'
+import Product from '../screens/Product'
 
 export type AppParams = {
 	HomeStack: undefined
@@ -22,7 +22,8 @@ export type AppParams = {
 export type HomeStackParams = {
 	Home: undefined
 	Feed: undefined
-	Products: undefined
+	Products: { search: string }
+	Product: { id?: string; name: string }
 }
 
 export type AuthParams = {
@@ -40,10 +41,12 @@ const HomeStack: React.FC = () => (
 		screenOptions={{
 			headerShown: false,
 		}}
+		initialRouteName={'Home'}
 	>
 		<HomeNav.Screen name="Home" component={Home} />
 		<HomeNav.Screen name="Feed" component={Feed} />
 		<HomeNav.Screen name="Products" component={Products} />
+		<HomeNav.Screen name="Product" component={Product} />
 	</HomeNav.Navigator>
 )
 
@@ -52,6 +55,7 @@ export const App: React.FC = () => {
 		<>
 			<Header />
 			<AppNav.Navigator
+				initialRouteName={'HomeStack'}
 				screenOptions={({ route }) => ({
 					headerShown: false,
 					headerLeft: () => null,
@@ -95,6 +99,7 @@ export const Auth: React.FC = () => {
 		<>
 			<Header />
 			<AuthNav.Navigator
+				initialRouteName={'Splash'}
 				screenOptions={{
 					headerShown: false,
 					headerLeft: () => null,
