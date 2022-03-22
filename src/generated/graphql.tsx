@@ -15,54 +15,20 @@ export type Scalars = {
   Float: number;
 };
 
-export type Game = {
-  __typename?: 'Game';
-  id: Scalars['String'];
-  players?: Maybe<Array<User>>;
-  product: Product;
-  slots: Scalars['Int'];
-};
-
-export type InputGame = {
-  id: Scalars['String'];
-  players?: InputMaybe<Array<InputUser>>;
-  product: InputProduct;
-  slots: Scalars['Int'];
-};
-
-export type InputProduct = {
-  description: Scalars['String'];
-  id: Scalars['String'];
-  image: Scalars['String'];
-  price: Scalars['Int'];
-  title: Scalars['String'];
-};
-
-export type InputUser = {
-  email: Scalars['String'];
-  games?: InputMaybe<Array<InputGame>>;
-  id: Scalars['String'];
-  likes?: InputMaybe<Array<InputGame>>;
-  name: Scalars['String'];
-  password: Scalars['String'];
-  points: Scalars['Int'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  createGame: Product;
-  createUser: Scalars['String'];
-  joinGame: Game;
-  like: Game;
-  play: Game;
-  signInUser: Scalars['String'];
+  createProduct: Product;
+  createUser: UserResponse;
+  signInUser: UserResponse;
 };
 
 
-export type MutationCreateGameArgs = {
-  players?: InputMaybe<Array<InputUser>>;
-  product: InputProduct;
-  slots: Scalars['Int'];
+export type MutationCreateProductArgs = {
+  description: Scalars['String'];
+  image: Scalars['String'];
+  price: Scalars['Int'];
+  tags: Array<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 
@@ -70,22 +36,6 @@ export type MutationCreateUserArgs = {
   email: Scalars['String'];
   name: Scalars['String'];
   password: Scalars['String'];
-};
-
-
-export type MutationJoinGameArgs = {
-  gameId: Scalars['String'];
-  gameType: Scalars['String'];
-};
-
-
-export type MutationLikeArgs = {
-  gameId: Scalars['String'];
-};
-
-
-export type MutationPlayArgs = {
-  gameId: Scalars['String'];
 };
 
 
@@ -100,25 +50,15 @@ export type Product = {
   id: Scalars['String'];
   image: Scalars['String'];
   price: Scalars['Int'];
+  tags: Array<Scalars['String']>;
   title: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  game: Game;
-  games: Array<Game>;
   me?: Maybe<User>;
-  product: Product;
+  product?: Maybe<Product>;
   products: Array<Product>;
-  user: User;
-  userGames?: Maybe<Array<Game>>;
-  userLikes?: Maybe<Array<Game>>;
-  users: Array<User>;
-};
-
-
-export type QueryGameArgs = {
-  id: Scalars['String'];
 };
 
 
@@ -127,30 +67,35 @@ export type QueryProductArgs = {
 };
 
 
-export type QueryUserArgs = {
-  userId: Scalars['String'];
-};
-
-
-export type QueryUserGamesArgs = {
-  userId: Scalars['String'];
-};
-
-
-export type QueryUserLikesArgs = {
-  userId: Scalars['String'];
+export type QueryProductsArgs = {
+  search?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
-  games?: Maybe<Array<Game>>;
   id: Scalars['String'];
-  likes?: Maybe<Array<Game>>;
   name: Scalars['String'];
   password: Scalars['String'];
   points: Scalars['Int'];
 };
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  token: Scalars['String'];
+  user: User;
+};
+
+export type CreateProductMutationVariables = Exact<{
+  title: Scalars['String'];
+  description: Scalars['String'];
+  image: Scalars['String'];
+  price: Scalars['Int'];
+  tags: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> } };
 
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
@@ -159,7 +104,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: string };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserResponse', token: string, user: { __typename?: 'User', id: string } } };
 
 export type SignInUserMutationVariables = Exact<{
   email: Scalars['String'];
@@ -167,7 +112,7 @@ export type SignInUserMutationVariables = Exact<{
 }>;
 
 
-export type SignInUserMutation = { __typename?: 'Mutation', signInUser: string };
+export type SignInUserMutation = { __typename?: 'Mutation', signInUser: { __typename?: 'UserResponse', token: string, user: { __typename?: 'User', id: string } } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -179,17 +124,72 @@ export type ProductQueryVariables = Exact<{
 }>;
 
 
-export type ProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: string, title: string, description: string, image: string, price: number } };
+export type ProductQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> } | null };
 
-export type ProductsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ProductsQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']>;
+}>;
 
 
-export type ProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description: string, image: string, price: number }> };
+export type ProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> }> };
 
 
+export const CreateProductDocument = gql`
+    mutation CreateProduct($title: String!, $description: String!, $image: String!, $price: Int!, $tags: [String!]!) {
+  createProduct(
+    title: $title
+    description: $description
+    image: $image
+    price: $price
+    tags: $tags
+  ) {
+    id
+    title
+    description
+    image
+    price
+    tags
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      description: // value for 'description'
+ *      image: // value for 'image'
+ *      price: // value for 'price'
+ *      tags: // value for 'tags'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($email: String!, $name: String!, $password: String!) {
-  createUser(email: $email, name: $name, password: $password)
+  createUser(email: $email, name: $name, password: $password) {
+    user {
+      id
+    }
+    token
+  }
 }
     `;
 export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
@@ -222,7 +222,12 @@ export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const SignInUserDocument = gql`
     mutation SignInUser($email: String!, $password: String!) {
-  signInUser(email: $email, password: $password)
+  signInUser(email: $email, password: $password) {
+    user {
+      id
+    }
+    token
+  }
 }
     `;
 export type SignInUserMutationFn = Apollo.MutationFunction<SignInUserMutation, SignInUserMutationVariables>;
@@ -298,6 +303,7 @@ export const ProductDocument = gql`
     description
     image
     price
+    tags
   }
 }
     `;
@@ -330,13 +336,14 @@ export type ProductQueryHookResult = ReturnType<typeof useProductQuery>;
 export type ProductLazyQueryHookResult = ReturnType<typeof useProductLazyQuery>;
 export type ProductQueryResult = Apollo.QueryResult<ProductQuery, ProductQueryVariables>;
 export const ProductsDocument = gql`
-    query Products {
-  products {
+    query Products($search: String) {
+  products(search: $search) {
     id
     title
     description
     image
     price
+    tags
   }
 }
     `;
@@ -353,6 +360,7 @@ export const ProductsDocument = gql`
  * @example
  * const { data, loading, error } = useProductsQuery({
  *   variables: {
+ *      search: // value for 'search'
  *   },
  * });
  */

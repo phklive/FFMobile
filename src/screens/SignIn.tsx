@@ -1,12 +1,12 @@
 import React from 'react'
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, Text, TextInput, View } from 'react-native'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import tw from 'twrnc'
 import useAuth from '../utils/useAuth'
-import { useLoginUserMutation } from '../generated/graphql'
+import { useSignInUserMutation } from '../generated/graphql'
 import { AuthParams } from '../navigation/Stack'
 import Spacer from '../ui/Spacer'
 import ButtonUI from '../ui/ButtonUI'
@@ -14,13 +14,13 @@ import Spinner from '../ui/Spinner'
 
 const SignIn: React.FC = () => {
 	const navigation = useNavigation<NativeStackNavigationProp<AuthParams>>()
-	const [signInMutation, { loading }] = useLoginUserMutation()
+	const [signInMutation, { loading }] = useSignInUserMutation()
 	const { signIn } = useAuth()
 
 	const loginHandler = async (email: string, password: string) => {
 		try {
 			const token = await signInMutation({ variables: { email, password } })
-			signIn(token.data?.loginUser as string)
+			signIn(token.data?.signInUser.token as string)
 			Alert.alert('Successfully logged in.')
 		} catch (e: any) {
 			Alert.alert(e.message)

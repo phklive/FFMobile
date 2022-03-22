@@ -6,18 +6,13 @@ import tw from 'twrnc'
 import { Product } from '../generated/graphql'
 import { HomeStackParams } from '../navigation/Stack'
 
-const ProductItem: React.FC<Product> = ({
-	image,
-	price,
-	title,
-	description,
-}) => {
+const ProductItem: React.FC<Product> = ({ id, image, price, title }) => {
 	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
 
 	return (
 		<Pressable
 			style={tw`flex flex-col items-center mx-auto my-3`}
-			onPress={() => navigation.navigate('Product', { name: title })}
+			onPress={() => navigation.navigate('Product', { id })}
 		>
 			<Image
 				source={{

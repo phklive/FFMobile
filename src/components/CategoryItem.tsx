@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Pressable } from 'react-native'
+import { Text, Pressable, Image } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import tw from 'twrnc'
 import { useNavigation } from '@react-navigation/native'
@@ -9,20 +9,23 @@ import { HomeStackParams } from '../navigation/Stack'
 interface CategoryProps {
 	title: string
 	image: string
+	tag: string
 }
 
-const Category: React.FC<CategoryProps> = ({ title, image }) => {
+const Category: React.FC<CategoryProps> = ({ title, image, tag }) => {
 	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
 	return (
 		<Pressable
-			style={[
-				tw`flex flex-row rounded p-2 mr-4 items-center`,
-				{ backgroundColor: '#8d99ae' },
-			]}
-			onPress={() => navigation.navigate('Products', { search: title })}
+			style={tw`items-center mx-2`}
+			onPress={() => navigation.navigate('Products', { search: tag })}
 		>
-			<Ionicons name={image as any} size={24} color="#2b2d42" />
-			<Text style={[tw`ml-2 text-xl`, { color: '#2b2d42' }]}>{title}</Text>
+			<Image
+				source={{
+					uri: image,
+				}}
+				style={tw`h-18 w-18 rounded-full mb-2`}
+			/>
+			<Text style={tw``}>{title}</Text>
 		</Pressable>
 	)
 }

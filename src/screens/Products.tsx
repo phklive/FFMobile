@@ -7,12 +7,12 @@ import { HomeStackParams } from '../navigation/Stack'
 
 type ProductsProps = NativeStackScreenProps<HomeStackParams, 'Products'>
 
-const Products: React.FC<ProductsProps> = ({}) => {
+const Products: React.FC<ProductsProps> = ({ route }) => {
 	return (
 		<>
 			<FFHeader version="back" />
-			<SearchBar />
-			<ProductList />
+			<SearchBar initialText={route.params.search} />
+			<ProductList search={route.params.search} />
 		</>
 	)
 }

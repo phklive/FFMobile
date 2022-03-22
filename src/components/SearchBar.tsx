@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { View, TextInput } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { Swipeable } from 'react-native-gesture-handler'
 import tw from 'twrnc'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { HomeStackParams } from '../navigation/Stack'
 
-interface SearchBarProps {}
+interface SearchBarProps {
+	initialText?: string
+}
 
-const SearchBar: React.FC<SearchBarProps> = ({}) => {
+const SearchBar: React.FC<SearchBarProps> = ({ initialText }) => {
 	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
 	const [searchValue, setSearchValue] = useState<string>('')
 	const [focused, setFocused] = useState<boolean>(false)
@@ -16,6 +19,14 @@ const SearchBar: React.FC<SearchBarProps> = ({}) => {
 	const searchHandler = () => {
 		if (searchValue) navigation.push('Products', { search: searchValue })
 	}
+
+	useEffect(() => {
+		if (initialText) {
+			setSearchValue(initialText)
+		} else {
+			setSearchValue('')
+		}
+	}, [])
 
 	return (
 		<View
@@ -38,16 +49,6 @@ const SearchBar: React.FC<SearchBarProps> = ({}) => {
 					placeholder="Search"
 					maxLength={20}
 				/>
-
-				{focused && (
-					<Ionicons
-						style={tw`ml-auto`}
-						name="close-outline"
-						size={20}
-						color={'black'}
-						onPress={() => setSearchValue('')}
-					/>
-				)}
 			</View>
 		</View>
 	)

@@ -1,6 +1,6 @@
 import React from 'react'
+import { View, Text, Image, useWindowDimensions } from 'react-native'
 import tw from 'twrnc'
-import { Image, useWindowDimensions, View } from 'react-native'
 
 interface CarouselItemProps {
 	image: string
@@ -9,22 +9,23 @@ interface CarouselItemProps {
 const CarouselItem: React.FC<CarouselItemProps> = ({ image }) => {
 	const { width } = useWindowDimensions()
 	return (
-		<View style={[tw``, { width: width - 20 }]}>
+		<View style={tw`items-center mx-2`}>
 			<Image
 				source={{
-					uri: `${image}`,
+					uri: 'https://images.pexels.com/photos/3510/hand-apple-iphone-smartphone.jpg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260',
 				}}
-				style={[
-					{
-						width: width - 20,
-						height: 200,
-						alignSelf: 'center',
-						resizeMode: 'contain',
-					},
-				]}
+				style={tw`h-70 w-70 rounded-full mb-4`}
 			/>
+			<Text style={tw`text-base`}>SmartPhone</Text>
 		</View>
 	)
 }
 
 export default CarouselItem
+
+// 	{
+// 	height: 70,
+// 	width: 70,
+// 	borderRadius: 100,
+// 	marginBottom: 4,
+// }

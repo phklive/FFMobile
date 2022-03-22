@@ -30,11 +30,16 @@ const FFHeader: React.FC<FFHeaderProps> = ({ version }) => {
 						name="add-circle-outline"
 						size={28}
 						color="black"
-						onPress={() => navigation.navigate('Feed')}
+						onPress={() => navigation.navigate('Store')}
 						style={tw`mr-2 ml-1`}
 					/>
 				</View>
-				<Text style={[tw`text-2xl font-bold`]}>FiftyFiftys</Text>
+				<Text
+					onPress={() => navigation.navigate('Home')}
+					style={[tw`text-2xl font-bold`]}
+				>
+					FiftyFiftys
+				</Text>
 				<View style={tw`flex flex-row items-center`}>
 					<Ionicons
 						name="notifications-outline"
@@ -48,7 +53,7 @@ const FFHeader: React.FC<FFHeaderProps> = ({ version }) => {
 						name="heart-outline"
 						size={28}
 						color="black"
-						onPress={() => navigation.navigate('Feed')}
+						onPress={() => navigation.navigate('Likes')}
 						style={tw`ml-2`}
 					/>
 				</View>
@@ -64,7 +69,7 @@ const FFHeader: React.FC<FFHeaderProps> = ({ version }) => {
 					name="add-circle-outline"
 					size={28}
 					color="black"
-					onPress={() => navigation.navigate('Feed')}
+					onPress={() => navigation.navigate('Store')}
 					style={tw`mr-2 ml-1`}
 				/>
 
@@ -80,7 +85,7 @@ const FFHeader: React.FC<FFHeaderProps> = ({ version }) => {
 					name="heart-outline"
 					size={28}
 					color="black"
-					onPress={() => navigation.navigate('Feed')}
+					onPress={() => navigation.navigate('Likes')}
 					style={tw`ml-2`}
 				/>
 			</View>

@@ -5,5 +5,6 @@ query Product($productId: String!) {
 		description
 		image
 		price
+		tags
 	}
 }

@@ -8,10 +8,14 @@ import ProductItem from './ProductItem'
 
 interface ProductListProps {
 	header?: any
+	search?: string
 }
 
-const ProductList: React.FC<ProductListProps> = ({ header }) => {
-	const { loading, error, data } = useProductsQuery()
+const ProductList: React.FC<ProductListProps> = ({ header, search }) => {
+	const { loading, error, data } = useProductsQuery({
+		variables: { search },
+	})
+
 	const renderItem: ListRenderItem<Product> = ({ item }) => {
 		return (
 			<ProductItem
@@ -20,15 +24,17 @@ const ProductList: React.FC<ProductListProps> = ({ header }) => {
 				title={item.title}
 				price={item.price}
 				description={item.description}
+				tags={item.tags}
 			/>
 		)
 	}
 
 	if (loading) return <Spinner />
+
 	if (error)
 		return (
 			<Text style={tw`text-center text-xl`}>
-				There has been an error please retry...
+				There has been an error please reload.
 			</Text>
 		)
 

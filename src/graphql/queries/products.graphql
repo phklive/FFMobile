@@ -1,9 +1,10 @@
-query Products {
-	products {
+query Products($search: String) {
+	products(search: $search) {
 		id
 		title
 		description
 		image
 		price
+		tags
 	}
 }

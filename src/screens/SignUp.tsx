@@ -24,7 +24,7 @@ const SignUp: React.FC = () => {
 			const token = await signUpMutation({
 				variables: { name, email, password },
 			})
-			signIn(token.data?.createUser as string)
+			signIn(token.data?.createUser.token as string)
 			Alert.alert('Successfully signed up.')
 		} catch (e: any) {
 			Alert.alert(e.message)
