@@ -1,14 +1,26 @@
-import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React from 'react'
-import { Text, View, Image, Pressable } from 'react-native'
+import { Text, Image, Pressable } from 'react-native'
 import tw from 'twrnc'
-import { Product } from '../generated/graphql'
-import { HomeStackParams } from '../navigation/Stack'
+import { Scalars } from '../generated/graphql'
 
-const ProductItem: React.FC<Product> = ({ id, image, price, title }) => {
-	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
+type Product = {
+	__typename?: 'Product' | undefined
+	description: Scalars['String']
+	id: Scalars['String']
+	image: Scalars['String']
+	price: Scalars['Int']
+	tags: Array<Scalars['String']>
+	title: Scalars['String']
+	navigation: any
+}
 
+const ProductItem: React.FC<Product> = ({
+	id,
+	image,
+	price,
+	title,
+	navigation,
+}) => {
 	return (
 		<Pressable
 			style={tw`flex flex-col items-center mx-auto my-3`}

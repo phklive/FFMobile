@@ -2,20 +2,25 @@ import React from 'react'
 import { View, ListRenderItem, Text } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import tw from 'twrnc'
-import { Product, useProductsQuery } from '../generated/graphql'
+import { Product } from '../generated/graphql'
 import Spinner from '../ui/Spinner'
 import ProductItem from './ProductItem'
 
 interface ProductListProps {
 	header?: any
-	search?: string
+	data: any
+	loading: boolean
+	error: any
+	navigation: any
 }
 
-const ProductList: React.FC<ProductListProps> = ({ header, search }) => {
-	const { loading, error, data } = useProductsQuery({
-		variables: { search },
-	})
-
+const ProductList: React.FC<ProductListProps> = ({
+	header,
+	data,
+	loading,
+	error,
+	navigation,
+}) => {
 	const renderItem: ListRenderItem<Product> = ({ item }) => {
 		return (
 			<ProductItem
@@ -25,6 +30,7 @@ const ProductList: React.FC<ProductListProps> = ({ header, search }) => {
 				price={item.price}
 				description={item.description}
 				tags={item.tags}
+				navigation={navigation}
 			/>
 		)
 	}
@@ -41,7 +47,7 @@ const ProductList: React.FC<ProductListProps> = ({ header, search }) => {
 	return (
 		<View style={tw`flex-1`}>
 			<FlatList
-				data={data?.products}
+				data={data}
 				renderItem={renderItem}
 				numColumns={2}
 				showsVerticalScrollIndicator={false}

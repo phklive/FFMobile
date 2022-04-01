@@ -2,14 +2,12 @@ import React from 'react'
 import tw from 'twrnc'
 import { View, Image, Text } from 'react-native'
 
-interface POTDProps {}
-
-const POTD: React.FC<POTDProps> = ({}) => {
+const POTX: React.FC = () => {
 	return (
 		<View style={tw`mt-2`}>
 			<Image
 				source={{
-					uri: 'https://images.pexels.com/photos/1149137/pexels-photo-1149137.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+					uri: 'https://media0.giphy.com/media/l0Ex6kAKAoFRsFh6M/giphy.gif?cid=ecf05e474zk6ulvzv9i3uwf0flhowy96jiyobrddlqr6rpck&rid=giphy.gif&ct=g',
 				}}
 				style={tw`h-55 w-11/12 self-center rounded`}
 			/>
@@ -17,4 +15,4 @@ const POTD: React.FC<POTDProps> = ({}) => {
 	)
 }
 
-export default POTD
+export default POTX

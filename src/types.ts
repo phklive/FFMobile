@@ -17,3 +17,17 @@ export type gameMode = {
 	title: string
 	numPlayers: number
 }
+
+export type notification = {
+	id: string
+	title: string
+	text: string
+	image: string
+}
+
+export type setting = {
+	icon: string
+	color: string
+	text: string
+	onPress: () => void
+}

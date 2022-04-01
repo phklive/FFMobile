@@ -9,16 +9,20 @@ import SignUp from '../screens/SignUp'
 import Splash from '../screens/Splash'
 import Header from '../ui/Header'
 import Products from '../screens/Products'
-import Tinder from '../screens/Tinder'
+import Flash from '../screens/Flash'
 import Product from '../screens/Product'
 import Store from '../screens/Store'
 import Feed from '../screens/Feed'
 import Likes from '../screens/Likes'
+import Search from '../screens/Search'
+import MyGames from '../screens/MyGames'
 
 export type AppParams = {
 	HomeStack: undefined
 	ProfileStack: undefined
-	Tinder: undefined
+	Flash: undefined
+	MyGames: undefined
+	LikesStack: undefined
 }
 
 export type HomeStackParams = {
@@ -37,7 +41,16 @@ export type HomeStackParams = {
 
 export type ProfileStackParams = {
 	Profile: undefined
+}
+
+export type LikeStackParams = {
 	Likes: undefined
+	Product: {
+		id: string
+		title?: string
+		image?: string
+		price?: number
+	}
 }
 
 export type AuthParams = {
@@ -47,9 +60,11 @@ export type AuthParams = {
 }
 
 const AppNav = createBottomTabNavigator<AppParams>()
-const HomeNav = createStackNavigator<HomeStackParams>()
-const ProfileNav = createStackNavigator<ProfileStackParams>()
 const AuthNav = createStackNavigator<AuthParams>()
+
+const HomeNav = createStackNavigator<HomeStackParams>()
+const LikesNav = createStackNavigator<LikeStackParams>()
+const ProfileNav = createStackNavigator<ProfileStackParams>()
 
 const HomeStack: React.FC = () => (
 	<HomeNav.Navigator
@@ -63,7 +78,6 @@ const HomeStack: React.FC = () => (
 		<HomeNav.Screen name="Product" component={Product} />
 		<HomeNav.Screen name="Feed" component={Feed} />
 		<HomeNav.Screen name="Store" component={Store} />
-		<HomeNav.Screen name="Likes" component={Likes} />
 	</HomeNav.Navigator>
 )
 
@@ -75,8 +89,19 @@ const ProfileStack: React.FC = () => (
 		initialRouteName={'Profile'}
 	>
 		<ProfileNav.Screen name="Profile" component={Profile} />
-		<ProfileNav.Screen name="Likes" component={Likes} />
 	</ProfileNav.Navigator>
+)
+
+const LikesStack: React.FC = () => (
+	<LikesNav.Navigator
+		screenOptions={{
+			headerShown: false,
+		}}
+		initialRouteName={'Likes'}
+	>
+		<LikesNav.Screen name="Likes" component={Likes} />
+		<LikesNav.Screen name="Product" component={Product} />
+	</LikesNav.Navigator>
 )
 
 export const App: React.FC = () => {
@@ -94,10 +119,14 @@ export const App: React.FC = () => {
 							iconName = focused ? 'home-outline' : 'home-outline'
 						} else if (route.name === 'ProfileStack') {
 							iconName = focused ? 'person-outline' : 'person-outline'
-						} else if (route.name === 'Tinder') {
-							iconName = focused ? 'search-outline' : 'search-outline'
-						} else if (route.name === 'SignIn') {
-							iconName = focused ? 'person-add-outline' : 'person-add-outline'
+						} else if (route.name === 'Flash') {
+							iconName = focused ? 'flash-outline' : 'flash-outline'
+						} else if (route.name === 'MyGames') {
+							iconName = focused
+								? 'game-controller-outline'
+								: 'game-controller-outline'
+						} else if (route.name === 'LikesStack') {
+							iconName = focused ? 'heart-outline' : 'heart-outline'
 						}
 						return <Ionicons name={iconName as any} size={size} color={color} />
 					},
@@ -117,7 +146,17 @@ export const App: React.FC = () => {
 						component={HomeStack}
 						options={{ title: 'Home' }}
 					/>
-					<AppNav.Screen name="Tinder" component={Tinder} />
+					<AppNav.Screen
+						name="MyGames"
+						component={MyGames}
+						options={{ title: 'Games' }}
+					/>
+					<AppNav.Screen name="Flash" component={Flash} />
+					<AppNav.Screen
+						name="LikesStack"
+						component={LikesStack}
+						options={{ title: 'Likes' }}
+					/>
 					<AppNav.Screen
 						name="ProfileStack"
 						component={ProfileStack}

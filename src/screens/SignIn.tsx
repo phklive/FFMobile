@@ -68,6 +68,7 @@ const SignIn: React.FC = () => {
 					onBlur={formik.handleBlur('password')}
 					value={formik.values.password}
 					autoCapitalize="none"
+					secureTextEntry={true}
 				/>
 				<Text style={tw`ml-8 mt-2 text-base`}>Forgot your password?</Text>
 				{loading ? (

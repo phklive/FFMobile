@@ -15,7 +15,7 @@ const FFHeader: React.FC<FFHeaderProps> = ({ version }) => {
 
 	if (version === 'back')
 		return (
-			<View style={tw`flex flex-row justify-between items-center mb-2 px-3`}>
+			<View style={tw`flex flex-row justify-between items-center mb-2 px-2`}>
 				<View style={tw`flex flex-row items-center`}>
 					<Ionicons
 						name="chevron-back-outline"
@@ -60,10 +60,46 @@ const FFHeader: React.FC<FFHeaderProps> = ({ version }) => {
 			</View>
 		)
 
+	if (version === 'tinder')
+		return (
+			<View style={tw`flex flex-row justify-between items-center mb-2 px-2`}>
+				<View style={tw`flex flex-row items-center`}>
+					<Ionicons name="flash-outline" color={'yellow'} size={28} />
+					<Text style={tw`text-xl`}>Flash</Text>
+				</View>
+				<Text style={[tw`text-2xl font-bold`]}>FiftyFiftys</Text>
+				<View style={tw`flex flex-row items-center`}>
+					<Text style={tw`text-base`}>$3942</Text>
+					<Ionicons
+						name="add-circle-outline"
+						size={28}
+						color="black"
+						onPress={() => navigation.navigate('Store')}
+					/>
+				</View>
+			</View>
+		)
+
+	if (version === 'product')
+		return (
+			<View style={tw`flex flex-row justify-between items-center mb-2 px-2`}>
+				<Text style={[tw`text-2xl font-bold`]}>FiftyFiftys</Text>
+				<View style={tw`flex flex-row items-center`}>
+					<Text style={tw`text-base`}>$3942</Text>
+					<Ionicons
+						name="add-circle-outline"
+						size={28}
+						color="black"
+						onPress={() => navigation.navigate('Store')}
+					/>
+				</View>
+			</View>
+		)
+
 	return (
-		<View style={tw`flex flex-row justify-between items-center mb-2 px-3`}>
+		<View style={tw`flex flex-row items-center mb-2 px-2`}>
 			<Text style={[tw`text-2xl font-bold`]}>FiftyFiftys</Text>
-			<View style={tw`flex flex-row items-center`}>
+			<View style={tw`flex flex-row items-center ml-auto`}>
 				<Text style={tw`text-base`}>$3942</Text>
 				<Ionicons
 					name="add-circle-outline"
@@ -78,15 +114,7 @@ const FFHeader: React.FC<FFHeaderProps> = ({ version }) => {
 					size={28}
 					color="black"
 					onPress={() => navigation.navigate('Feed')}
-					style={tw`mx-4`}
-				/>
-
-				<Ionicons
-					name="heart-outline"
-					size={28}
-					color="black"
-					onPress={() => navigation.navigate('Likes')}
-					style={tw`ml-2`}
+					style={tw`mr-2`}
 				/>
 			</View>
 		</View>

@@ -19,7 +19,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   createProduct: Product;
   createUser: UserResponse;
+  likeProduct: User;
+  notify: Scalars['String'];
   signInUser: UserResponse;
+  unLikeProduct: User;
 };
 
 
@@ -39,9 +42,35 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationLikeProductArgs = {
+  productId: Scalars['String'];
+};
+
+
+export type MutationNotifyArgs = {
+  productId: Scalars['String'];
+  text: Scalars['String'];
+  title: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+
 export type MutationSignInUserArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationUnLikeProductArgs = {
+  productId: Scalars['String'];
+};
+
+export type Notification = {
+  __typename?: 'Notification';
+  id: Scalars['String'];
+  product: Product;
+  text: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type Product = {
@@ -59,6 +88,7 @@ export type Query = {
   me?: Maybe<User>;
   product?: Maybe<Product>;
   products: Array<Product>;
+  userLikes: User;
 };
 
 
@@ -75,9 +105,12 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['String'];
+  likes: Array<Maybe<Product>>;
   name: Scalars['String'];
+  notifications: Array<Maybe<Notification>>;
   password: Scalars['String'];
   points: Scalars['Int'];
+  profilePicture?: Maybe<Scalars['String']>;
 };
 
 export type UserResponse = {
@@ -106,6 +139,13 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserResponse', token: string, user: { __typename?: 'User', id: string } } };
 
+export type LikeProductMutationVariables = Exact<{
+  productId: Scalars['String'];
+}>;
+
+
+export type LikeProductMutation = { __typename?: 'Mutation', likeProduct: { __typename?: 'User', id: string } };
+
 export type SignInUserMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -114,10 +154,17 @@ export type SignInUserMutationVariables = Exact<{
 
 export type SignInUserMutation = { __typename?: 'Mutation', signInUser: { __typename?: 'UserResponse', token: string, user: { __typename?: 'User', id: string } } };
 
+export type UnLikeProductMutationVariables = Exact<{
+  productId: Scalars['String'];
+}>;
+
+
+export type UnLikeProductMutation = { __typename?: 'Mutation', unLikeProduct: { __typename?: 'User', id: string } };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, name: string, email: string, password: string, points: number } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, name: string, email: string, points: number, likes: Array<{ __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> } | null>, notifications: Array<{ __typename?: 'Notification', id: string, title: string, text: string, product: { __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> } } | null> } | null };
 
 export type ProductQueryVariables = Exact<{
   productId: Scalars['String'];
@@ -220,6 +267,39 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const LikeProductDocument = gql`
+    mutation LikeProduct($productId: String!) {
+  likeProduct(productId: $productId) {
+    id
+  }
+}
+    `;
+export type LikeProductMutationFn = Apollo.MutationFunction<LikeProductMutation, LikeProductMutationVariables>;
+
+/**
+ * __useLikeProductMutation__
+ *
+ * To run a mutation, you first call `useLikeProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeProductMutation, { data, loading, error }] = useLikeProductMutation({
+ *   variables: {
+ *      productId: // value for 'productId'
+ *   },
+ * });
+ */
+export function useLikeProductMutation(baseOptions?: Apollo.MutationHookOptions<LikeProductMutation, LikeProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LikeProductMutation, LikeProductMutationVariables>(LikeProductDocument, options);
+      }
+export type LikeProductMutationHookResult = ReturnType<typeof useLikeProductMutation>;
+export type LikeProductMutationResult = Apollo.MutationResult<LikeProductMutation>;
+export type LikeProductMutationOptions = Apollo.BaseMutationOptions<LikeProductMutation, LikeProductMutationVariables>;
 export const SignInUserDocument = gql`
     mutation SignInUser($email: String!, $password: String!) {
   signInUser(email: $email, password: $password) {
@@ -257,14 +337,67 @@ export function useSignInUserMutation(baseOptions?: Apollo.MutationHookOptions<S
 export type SignInUserMutationHookResult = ReturnType<typeof useSignInUserMutation>;
 export type SignInUserMutationResult = Apollo.MutationResult<SignInUserMutation>;
 export type SignInUserMutationOptions = Apollo.BaseMutationOptions<SignInUserMutation, SignInUserMutationVariables>;
+export const UnLikeProductDocument = gql`
+    mutation UnLikeProduct($productId: String!) {
+  unLikeProduct(productId: $productId) {
+    id
+  }
+}
+    `;
+export type UnLikeProductMutationFn = Apollo.MutationFunction<UnLikeProductMutation, UnLikeProductMutationVariables>;
+
+/**
+ * __useUnLikeProductMutation__
+ *
+ * To run a mutation, you first call `useUnLikeProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnLikeProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unLikeProductMutation, { data, loading, error }] = useUnLikeProductMutation({
+ *   variables: {
+ *      productId: // value for 'productId'
+ *   },
+ * });
+ */
+export function useUnLikeProductMutation(baseOptions?: Apollo.MutationHookOptions<UnLikeProductMutation, UnLikeProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnLikeProductMutation, UnLikeProductMutationVariables>(UnLikeProductDocument, options);
+      }
+export type UnLikeProductMutationHookResult = ReturnType<typeof useUnLikeProductMutation>;
+export type UnLikeProductMutationResult = Apollo.MutationResult<UnLikeProductMutation>;
+export type UnLikeProductMutationOptions = Apollo.BaseMutationOptions<UnLikeProductMutation, UnLikeProductMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
     id
     name
     email
-    password
     points
+    likes {
+      id
+      title
+      description
+      image
+      price
+      tags
+    }
+    notifications {
+      id
+      title
+      text
+      product {
+        id
+        title
+        description
+        image
+        price
+        tags
+      }
+    }
   }
 }
     `;

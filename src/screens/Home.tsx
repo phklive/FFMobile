@@ -3,23 +3,33 @@ import { View, Text, Image } from 'react-native'
 import tw from 'twrnc'
 import CategoryList from '../components/CategoryList'
 import ProductList from '../components/ProductList'
-import CarouselList from '../components/CarouselList'
 import SearchBar from '../components/SearchBar'
 import FFHeader from '../ui/FFHeader'
-import POTD from '../components/POTD'
+import { useProductsQuery } from '../generated/graphql'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { HomeStackParams } from '../navigation/Stack'
+import POTX from './POTX'
 
 const Home: React.FC = () => {
+	const { loading, error, data } = useProductsQuery()
+	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
+
 	return (
 		<View style={tw`flex-1`}>
 			<FFHeader version="" />
 			<SearchBar initialText="" />
 			<ProductList
+				data={data?.products}
+				loading={loading}
+				error={error}
 				header={
 					<>
-						<POTD />
+						<POTX />
 						<CategoryList />
 					</>
 				}
+				navigation={navigation}
 			/>
 		</View>
 	)

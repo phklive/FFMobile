@@ -89,6 +89,7 @@ const SignUp: React.FC = () => {
 					onBlur={formik.handleBlur('password')}
 					value={formik.values.password}
 					autoCapitalize="none"
+					secureTextEntry={true}
 				/>
 				<ButtonUI onPress={() => formik.handleSubmit()} text="Register" />
 			</View>

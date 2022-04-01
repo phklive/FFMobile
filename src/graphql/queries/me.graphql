@@ -3,7 +3,27 @@ query Me {
 		id
 		name
 		email
-		password
 		points
+		likes {
+			id
+			title
+			description
+			image
+			price
+			tags
+		}
+		notifications {
+			id
+			title
+			text
+			product {
+				id
+				title
+				description
+				image
+				price
+				tags
+			}
+		}
 	}
 }
