@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Image } from 'react-native'
+import { View } from 'react-native'
 import tw from 'twrnc'
 import CategoryList from '../components/CategoryList'
 import ProductList from '../components/ProductList'

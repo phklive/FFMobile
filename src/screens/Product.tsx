@@ -8,10 +8,10 @@ import {
 import { HomeStackParams } from '../navigation/Stack'
 import {
 	useLikeProductMutation,
-	useMeQuery,
 	useProductQuery,
 	useUnLikeProductMutation,
-	MeDocument,
+	useUserLikesQuery,
+	UserLikesDocument,
 } from '../generated/graphql'
 import Spinner from '../ui/Spinner'
 import { Ionicons } from '@expo/vector-icons'
@@ -24,31 +24,30 @@ type ProductProps = NativeStackScreenProps<HomeStackParams, 'Product'>
 const Product: React.FC<ProductProps> = ({ route }) => {
 	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
 	const [likeClicked, setLikeClicked] = useState<boolean>()
-	const [selectedOption, setSelectedOption] = useState()
+	const [selectedMode, setSelectedMode] = useState({ selectedItem: 0 })
+	const [modeSelected, setModeSelected] = useState(false)
 
 	const [likeProduct] = useLikeProductMutation({
-		refetchQueries: [{ query: MeDocument }],
+		refetchQueries: [{ query: UserLikesDocument }],
 	})
 	const [unLikeProduct] = useUnLikeProductMutation({
-		refetchQueries: [{ query: MeDocument }],
+		refetchQueries: [{ query: UserLikesDocument }],
 	})
 
 	const { loading, data, error } = useProductQuery({
 		variables: { productId: route.params.id },
 	})
 
-	const { data: meData } = useMeQuery()
+	const { data: meData } = useUserLikesQuery()
 
 	useEffect(() => {
-		if (meData) {
-			const productLiked = meData?.me?.likes
-				.map(el => el?.id)
-				.includes(route.params.id)
-			if (productLiked) {
-				setLikeClicked(true)
-			} else {
-				setLikeClicked(false)
-			}
+		const productLiked = meData?.userLikes
+			.map(el => el?.id)
+			.includes(route.params.id)
+		if (productLiked) {
+			setLikeClicked(true)
+		} else {
+			setLikeClicked(false)
 		}
 	}, [meData])
 
@@ -68,7 +67,19 @@ const Product: React.FC<ProductProps> = ({ route }) => {
 		})
 	}
 
-	const gameOptionHandler = async (option: number) => {}
+	const selectHandler = (id: number) => {
+		if (selectedMode.selectedItem === id) {
+			setSelectedMode({ selectedItem: 0 })
+			setModeSelected(false)
+		} else {
+			setSelectedMode({ selectedItem: id })
+			setModeSelected(true)
+		}
+	}
+
+	const playHandler = () => {
+		console.log(selectedMode.selectedItem)
+	}
 
 	if (loading) return <Spinner />
 	if (error) return <Text>There has been an error please reload.</Text>
@@ -121,7 +132,28 @@ const Product: React.FC<ProductProps> = ({ route }) => {
 						{data?.product?.description}
 					</Text>
 				</View>
-				<GameController />
+				<View
+					style={tw`${
+						modeSelected ? '' : 'hidden'
+					} w-11/12 p-2 rounded border-black border-2 bg-gray-400 self-center my-2`}
+				>
+					<Text style={tw`text-center text-xl`}>
+						Entry price: {'$'}
+						{data?.product?.price! / selectedMode.selectedItem}
+					</Text>
+				</View>
+				<GameController
+					handler={selectHandler}
+					selectedItem={selectedMode.selectedItem}
+				/>
+				<Pressable
+					style={tw`${
+						modeSelected ? '' : 'hidden'
+					} p-2 w-11/12 bg-yellow-200 self-center border-2 border-black my-2 rounded-2xl`}
+					onPress={playHandler}
+				>
+					<Text style={tw`text-2xl text-center`}>Play!</Text>
+				</Pressable>
 			</ScrollView>
 		</>
 	)

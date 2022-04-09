@@ -11,8 +11,8 @@ import Router from './src/navigation/Router'
 import AuthProvider from './src/utils/AuthContext'
 
 const httpLink = createHttpLink({
-	uri: 'https://fiftyfiftys.herokuapp.com/graphql',
-	// uri: 'http://localhost:4000/graphql',
+	// uri: 'https://fiftyfiftys.herokuapp.com/graphql',
+	uri: 'http://localhost:4000/graphql',
 })
 
 const authLink = setContext(async (_, { headers }) => {

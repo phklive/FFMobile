@@ -31,3 +31,19 @@ export type setting = {
 	text: string
 	onPress: () => void
 }
+
+export type storeItem = {
+	title: string
+	price: string
+	content: string
+	amount: number
+	image: string
+	onPress?: (amount: number) => void
+	loading?: boolean
+}
+
+export type gameItem = {
+	title: string
+	price: string
+	image: string
+}

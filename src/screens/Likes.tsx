@@ -2,7 +2,7 @@ import React from 'react'
 import tw from 'twrnc'
 import { Text, View } from 'react-native'
 import ProductList from '../components/ProductList'
-import { useMeQuery } from '../generated/graphql'
+import { useUserLikesQuery } from '../generated/graphql'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { LikeStackParams } from '../navigation/Stack'
@@ -11,7 +11,9 @@ import Spinner from '../ui/Spinner'
 interface LikesProps {}
 
 const Likes: React.FC<LikesProps> = ({}) => {
-	const { loading, error, data } = useMeQuery()
+	const { loading, error, data } = useUserLikesQuery({
+		fetchPolicy: 'network-only',
+	})
 	const navigation = useNavigation<NativeStackNavigationProp<LikeStackParams>>()
 
 	if (loading) return <Spinner />
@@ -19,9 +21,9 @@ const Likes: React.FC<LikesProps> = ({}) => {
 	return (
 		<View style={tw`flex-1`}>
 			<Text style={tw`text-center text-3xl my-2`}>Your liked products</Text>
-			{data?.me?.likes.length! > 0 ? (
+			{data?.userLikes?.length! > 0 ? (
 				<ProductList
-					data={data?.me?.likes}
+					data={data?.userLikes}
 					loading={loading}
 					error={error}
 					navigation={navigation}

@@ -14,14 +14,14 @@ import Product from '../screens/Product'
 import Store from '../screens/Store'
 import Feed from '../screens/Feed'
 import Likes from '../screens/Likes'
-import Search from '../screens/Search'
-import MyGames from '../screens/MyGames'
+import Games from '../screens/Games'
+import Game from '../screens/Game'
 
 export type AppParams = {
 	HomeStack: undefined
 	ProfileStack: undefined
 	Flash: undefined
-	MyGames: undefined
+	GameStack: undefined
 	LikesStack: undefined
 }
 
@@ -30,6 +30,7 @@ export type HomeStackParams = {
 	Feed: undefined
 	Likes: undefined
 	Store: undefined
+	Payment: { amount: number }
 	Products: { search: string }
 	Product: {
 		id: string
@@ -53,6 +54,13 @@ export type LikeStackParams = {
 	}
 }
 
+export type GameStackParams = {
+	Games: undefined
+	Game: {
+		id: string
+	}
+}
+
 export type AuthParams = {
 	Splash: undefined
 	SignIn: undefined
@@ -63,7 +71,8 @@ const AppNav = createBottomTabNavigator<AppParams>()
 const AuthNav = createStackNavigator<AuthParams>()
 
 const HomeNav = createStackNavigator<HomeStackParams>()
-const LikesNav = createStackNavigator<LikeStackParams>()
+const LikeNav = createStackNavigator<LikeStackParams>()
+const GameNav = createStackNavigator<GameStackParams>()
 const ProfileNav = createStackNavigator<ProfileStackParams>()
 
 const HomeStack: React.FC = () => (
@@ -93,15 +102,27 @@ const ProfileStack: React.FC = () => (
 )
 
 const LikesStack: React.FC = () => (
-	<LikesNav.Navigator
+	<LikeNav.Navigator
 		screenOptions={{
 			headerShown: false,
 		}}
 		initialRouteName={'Likes'}
 	>
-		<LikesNav.Screen name="Likes" component={Likes} />
-		<LikesNav.Screen name="Product" component={Product} />
-	</LikesNav.Navigator>
+		<LikeNav.Screen name="Likes" component={Likes} />
+		<LikeNav.Screen name="Product" component={Product} />
+	</LikeNav.Navigator>
+)
+
+const GameStack: React.FC = () => (
+	<GameNav.Navigator
+		screenOptions={{
+			headerShown: false,
+		}}
+		initialRouteName={'Games'}
+	>
+		<GameNav.Screen name="Games" component={Games} />
+		<GameNav.Screen name="Game" component={Game} />
+	</GameNav.Navigator>
 )
 
 export const App: React.FC = () => {
@@ -121,7 +142,7 @@ export const App: React.FC = () => {
 							iconName = focused ? 'person-outline' : 'person-outline'
 						} else if (route.name === 'Flash') {
 							iconName = focused ? 'flash-outline' : 'flash-outline'
-						} else if (route.name === 'MyGames') {
+						} else if (route.name === 'GameStack') {
 							iconName = focused
 								? 'game-controller-outline'
 								: 'game-controller-outline'
@@ -147,8 +168,8 @@ export const App: React.FC = () => {
 						options={{ title: 'Home' }}
 					/>
 					<AppNav.Screen
-						name="MyGames"
-						component={MyGames}
+						name="GameStack"
+						component={GameStack}
 						options={{ title: 'Games' }}
 					/>
 					<AppNav.Screen name="Flash" component={Flash} />

@@ -15,14 +15,38 @@ export type Scalars = {
   Float: number;
 };
 
+export type Game = {
+  __typename?: 'Game';
+  ended: Scalars['Boolean'];
+  id: Scalars['String'];
+  players: Array<User>;
+  product: Product;
+  slots: Scalars['Int'];
+  started: Scalars['Boolean'];
+  winner?: Maybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createGame: Scalars['String'];
+  createPaymentIntent: PaymentIntent;
   createProduct: Product;
   createUser: UserResponse;
   likeProduct: User;
   notify: Scalars['String'];
   signInUser: UserResponse;
   unLikeProduct: User;
+};
+
+
+export type MutationCreateGameArgs = {
+  productId: Scalars['String'];
+  slots: Scalars['Int'];
+};
+
+
+export type MutationCreatePaymentIntentArgs = {
+  planAmount: Scalars['Int'];
 };
 
 
@@ -73,6 +97,11 @@ export type Notification = {
   title: Scalars['String'];
 };
 
+export type PaymentIntent = {
+  __typename?: 'PaymentIntent';
+  userSecret: Scalars['String'];
+};
+
 export type Product = {
   __typename?: 'Product';
   description: Scalars['String'];
@@ -85,10 +114,12 @@ export type Product = {
 
 export type Query = {
   __typename?: 'Query';
+  getPublishableKey: Scalars['String'];
   me?: Maybe<User>;
   product?: Maybe<Product>;
   products: Array<Product>;
-  userLikes: User;
+  userGames: Array<Maybe<Game>>;
+  userLikes: Array<Maybe<Product>>;
 };
 
 
@@ -104,13 +135,13 @@ export type QueryProductsArgs = {
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
+  games: Array<Maybe<Game>>;
   id: Scalars['String'];
   likes: Array<Maybe<Product>>;
   name: Scalars['String'];
   notifications: Array<Maybe<Notification>>;
   password: Scalars['String'];
   points: Scalars['Int'];
-  profilePicture?: Maybe<Scalars['String']>;
 };
 
 export type UserResponse = {
@@ -118,6 +149,13 @@ export type UserResponse = {
   token: Scalars['String'];
   user: User;
 };
+
+export type CreatePaymentIntentMutationVariables = Exact<{
+  planAmount: Scalars['Int'];
+}>;
+
+
+export type CreatePaymentIntentMutation = { __typename?: 'Mutation', createPaymentIntent: { __typename?: 'PaymentIntent', userSecret: string } };
 
 export type CreateProductMutationVariables = Exact<{
   title: Scalars['String'];
@@ -161,10 +199,15 @@ export type UnLikeProductMutationVariables = Exact<{
 
 export type UnLikeProductMutation = { __typename?: 'Mutation', unLikeProduct: { __typename?: 'User', id: string } };
 
+export type GetPublishableKeyQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPublishableKeyQuery = { __typename?: 'Query', getPublishableKey: string };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, name: string, email: string, points: number, likes: Array<{ __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> } | null>, notifications: Array<{ __typename?: 'Notification', id: string, title: string, text: string, product: { __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> } } | null> } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, name: string, email: string, password: string, points: number } | null };
 
 export type ProductQueryVariables = Exact<{
   productId: Scalars['String'];
@@ -180,7 +223,50 @@ export type ProductsQueryVariables = Exact<{
 
 export type ProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> }> };
 
+export type UserGamesQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type UserGamesQuery = { __typename?: 'Query', userGames: Array<{ __typename?: 'Game', id: string, slots: number, winner?: string | null, started: boolean, ended: boolean, product: { __typename?: 'Product', id: string, title: string, description: string, image: string, price: number, tags: Array<string> }, players: Array<{ __typename?: 'User', id: string, name: string, email: string }> } | null> };
+
+export type UserLikesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserLikesQuery = { __typename?: 'Query', userLikes: Array<{ __typename?: 'Product', id: string, description: string, title: string, image: string, price: number, tags: Array<string> } | null> };
+
+
+export const CreatePaymentIntentDocument = gql`
+    mutation CreatePaymentIntent($planAmount: Int!) {
+  createPaymentIntent(planAmount: $planAmount) {
+    userSecret
+  }
+}
+    `;
+export type CreatePaymentIntentMutationFn = Apollo.MutationFunction<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>;
+
+/**
+ * __useCreatePaymentIntentMutation__
+ *
+ * To run a mutation, you first call `useCreatePaymentIntentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePaymentIntentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPaymentIntentMutation, { data, loading, error }] = useCreatePaymentIntentMutation({
+ *   variables: {
+ *      planAmount: // value for 'planAmount'
+ *   },
+ * });
+ */
+export function useCreatePaymentIntentMutation(baseOptions?: Apollo.MutationHookOptions<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>(CreatePaymentIntentDocument, options);
+      }
+export type CreatePaymentIntentMutationHookResult = ReturnType<typeof useCreatePaymentIntentMutation>;
+export type CreatePaymentIntentMutationResult = Apollo.MutationResult<CreatePaymentIntentMutation>;
+export type CreatePaymentIntentMutationOptions = Apollo.BaseMutationOptions<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>;
 export const CreateProductDocument = gql`
     mutation CreateProduct($title: String!, $description: String!, $image: String!, $price: Int!, $tags: [String!]!) {
   createProduct(
@@ -370,34 +456,46 @@ export function useUnLikeProductMutation(baseOptions?: Apollo.MutationHookOption
 export type UnLikeProductMutationHookResult = ReturnType<typeof useUnLikeProductMutation>;
 export type UnLikeProductMutationResult = Apollo.MutationResult<UnLikeProductMutation>;
 export type UnLikeProductMutationOptions = Apollo.BaseMutationOptions<UnLikeProductMutation, UnLikeProductMutationVariables>;
+export const GetPublishableKeyDocument = gql`
+    query GetPublishableKey {
+  getPublishableKey
+}
+    `;
+
+/**
+ * __useGetPublishableKeyQuery__
+ *
+ * To run a query within a React component, call `useGetPublishableKeyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublishableKeyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublishableKeyQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPublishableKeyQuery(baseOptions?: Apollo.QueryHookOptions<GetPublishableKeyQuery, GetPublishableKeyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublishableKeyQuery, GetPublishableKeyQueryVariables>(GetPublishableKeyDocument, options);
+      }
+export function useGetPublishableKeyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublishableKeyQuery, GetPublishableKeyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublishableKeyQuery, GetPublishableKeyQueryVariables>(GetPublishableKeyDocument, options);
+        }
+export type GetPublishableKeyQueryHookResult = ReturnType<typeof useGetPublishableKeyQuery>;
+export type GetPublishableKeyLazyQueryHookResult = ReturnType<typeof useGetPublishableKeyLazyQuery>;
+export type GetPublishableKeyQueryResult = Apollo.QueryResult<GetPublishableKeyQuery, GetPublishableKeyQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
     id
     name
     email
+    password
     points
-    likes {
-      id
-      title
-      description
-      image
-      price
-      tags
-    }
-    notifications {
-      id
-      title
-      text
-      product {
-        id
-        title
-        description
-        image
-        price
-        tags
-      }
-    }
   }
 }
     `;
@@ -508,3 +606,93 @@ export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<P
 export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
 export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
 export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
+export const UserGamesDocument = gql`
+    query UserGames {
+  userGames {
+    id
+    slots
+    winner
+    started
+    ended
+    product {
+      id
+      title
+      description
+      image
+      price
+      tags
+    }
+    players {
+      id
+      name
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserGamesQuery__
+ *
+ * To run a query within a React component, call `useUserGamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserGamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserGamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserGamesQuery(baseOptions?: Apollo.QueryHookOptions<UserGamesQuery, UserGamesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserGamesQuery, UserGamesQueryVariables>(UserGamesDocument, options);
+      }
+export function useUserGamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserGamesQuery, UserGamesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserGamesQuery, UserGamesQueryVariables>(UserGamesDocument, options);
+        }
+export type UserGamesQueryHookResult = ReturnType<typeof useUserGamesQuery>;
+export type UserGamesLazyQueryHookResult = ReturnType<typeof useUserGamesLazyQuery>;
+export type UserGamesQueryResult = Apollo.QueryResult<UserGamesQuery, UserGamesQueryVariables>;
+export const UserLikesDocument = gql`
+    query UserLikes {
+  userLikes {
+    id
+    description
+    title
+    image
+    price
+    tags
+  }
+}
+    `;
+
+/**
+ * __useUserLikesQuery__
+ *
+ * To run a query within a React component, call `useUserLikesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserLikesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserLikesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserLikesQuery(baseOptions?: Apollo.QueryHookOptions<UserLikesQuery, UserLikesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserLikesQuery, UserLikesQueryVariables>(UserLikesDocument, options);
+      }
+export function useUserLikesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserLikesQuery, UserLikesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserLikesQuery, UserLikesQueryVariables>(UserLikesDocument, options);
+        }
+export type UserLikesQueryHookResult = ReturnType<typeof useUserLikesQuery>;
+export type UserLikesLazyQueryHookResult = ReturnType<typeof useUserLikesLazyQuery>;
+export type UserLikesQueryResult = Apollo.QueryResult<UserLikesQuery, UserLikesQueryVariables>;

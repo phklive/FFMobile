@@ -20,7 +20,7 @@ const Profile: React.FC = ({}) => {
 		loading,
 		error,
 		data: meData,
-	} = useMeQuery({ fetchPolicy: 'network-only' })
+	} = useMeQuery({ fetchPolicy: 'no-cache' })
 
 	const data = [
 		{

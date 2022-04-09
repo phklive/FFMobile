@@ -8,13 +8,12 @@ import tw from 'twrnc'
 import useAuth from '../utils/useAuth'
 import { useSignInUserMutation } from '../generated/graphql'
 import { AuthParams } from '../navigation/Stack'
-import Spacer from '../ui/Spacer'
 import ButtonUI from '../ui/ButtonUI'
 import Spinner from '../ui/Spinner'
 
 const SignIn: React.FC = () => {
 	const navigation = useNavigation<NativeStackNavigationProp<AuthParams>>()
-	const [signInMutation, { loading }] = useSignInUserMutation()
+	const [signInMutation, { loading, data }] = useSignInUserMutation()
 	const { signIn } = useAuth()
 
 	const loginHandler = async (email: string, password: string) => {

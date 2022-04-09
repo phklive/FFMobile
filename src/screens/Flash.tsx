@@ -1,22 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import tw from 'twrnc'
-import { View, useWindowDimensions, Text, Image } from 'react-native'
+import { View } from 'react-native'
 import FFHeader from '../ui/FFHeader'
-import Animated, {
-	useSharedValue,
-	useAnimatedStyle,
-	useAnimatedGestureHandler,
-	withSpring,
-	interpolate,
-	useDerivedValue,
-	runOnJS,
-	runOnUI,
-} from 'react-native-reanimated'
-import {
-	PanGestureHandler,
-	PanGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler'
-import FlashCard from '../components/FlashCard'
 import FlashStack from '../components/FlashStack'
 
 const data = [
