@@ -1,7 +1,6 @@
 import React from 'react'
 import tw from 'twrnc'
 import { View } from 'react-native'
-import FFHeader from '../ui/FFHeader'
 import FlashStack from '../components/FlashStack'
 
 const data = [
@@ -77,16 +76,13 @@ const Flash: React.FC = () => {
 	}
 
 	return (
-		<>
-			<FFHeader version="tinder" />
-			<View style={tw`flex-1 justify-center`}>
-				<FlashStack
-					data={data}
-					onSwipeLeft={onSwipeLeft}
-					onSwipeRight={onSwipeRight}
-				/>
-			</View>
-		</>
+		<View style={tw`flex-1 justify-center`}>
+			<FlashStack
+				data={data}
+				onSwipeLeft={onSwipeLeft}
+				onSwipeRight={onSwipeRight}
+			/>
+		</View>
 	)
 }
 

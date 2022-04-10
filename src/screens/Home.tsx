@@ -4,7 +4,6 @@ import tw from 'twrnc'
 import CategoryList from '../components/CategoryList'
 import ProductList from '../components/ProductList'
 import SearchBar from '../components/SearchBar'
-import FFHeader from '../ui/FFHeader'
 import { useProductsQuery } from '../generated/graphql'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -17,7 +16,6 @@ const Home: React.FC = () => {
 
 	return (
 		<View style={tw`flex-1`}>
-			<FFHeader version="" />
 			<SearchBar initialText="" />
 			<ProductList
 				data={data?.products}

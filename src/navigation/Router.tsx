@@ -1,4 +1,5 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
+import HeaderFF from '../ui/Header'
 import useAuth from '../utils/useAuth'
 import { Auth, App } from './Stack'
 

@@ -9,10 +9,11 @@ import { setContext } from '@apollo/client/link/context'
 import { getUser } from './src/utils/user'
 import Router from './src/navigation/Router'
 import AuthProvider from './src/utils/AuthContext'
+import HeaderFF from './src/ui/Header'
 
 const httpLink = createHttpLink({
-	// uri: 'https://fiftyfiftys.herokuapp.com/graphql',
-	uri: 'http://localhost:4000/graphql',
+	uri: 'https://fiftyfiftys.herokuapp.com/graphql',
+	// uri: 'http://localhost:4000/graphql',
 })
 
 const authLink = setContext(async (_, { headers }) => {

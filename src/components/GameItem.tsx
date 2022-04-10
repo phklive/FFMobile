@@ -1,19 +1,15 @@
 import React from 'react'
 import tw from 'twrnc'
 import { Text, Pressable, Image, View } from 'react-native'
-import { Game, useMeQuery } from '../generated/graphql'
-import Spinner from '../ui/Spinner'
+import { Game, User } from '../generated/graphql'
 
 interface GameItemProps {
 	game: Game
+	me: User
 	navigation: any
 }
 
-const GameItem: React.FC<GameItemProps> = ({ game, navigation }) => {
-	const { loading, error, data } = useMeQuery()
-
-	if (loading) return <Spinner />
-	if (error) return <Text>There has been an error:{error.message}</Text>
+const GameItem: React.FC<GameItemProps> = ({ game, navigation, me }) => {
 	return (
 		<Pressable
 			style={tw`w-11/12 h-60 bg-white shadow-lg my-2 p-2 self-center rounded`}
@@ -30,7 +26,7 @@ const GameItem: React.FC<GameItemProps> = ({ game, navigation }) => {
 					<Text style={tw``}>{game.slots}</Text>
 					{game.winner ? (
 						<Text style={tw``}>
-							{game.winner === data?.me?.id ? 'you have won' : 'you have lost'}
+							{game.winner === me?.id ? 'you have won' : 'you have lost'}
 						</Text>
 					) : (
 						<Text>No winner yet</Text>

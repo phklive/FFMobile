@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { LogBox } from 'react-native'
+
 import tw from 'twrnc'
 import { Alert, Text, View } from 'react-native'
 import StoreList from '../components/StoreList'
@@ -8,10 +10,20 @@ import {
 	useGetPublishableKeyQuery,
 } from '../generated/graphql'
 import Spinner from '../ui/Spinner'
+import { HomeStackParams } from '../navigation/Stack'
+import {
+	NativeStackNavigationProp,
+	NativeStackScreenProps,
+} from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
 
-interface StoreProps {}
+type StoreProps = NativeStackScreenProps<HomeStackParams, 'Store'>
 
-const Store: React.FC<StoreProps> = ({}) => {
+const Store: React.FC<StoreProps> = ({ route }) => {
+	LogBox.ignoreLogs([
+		'Non-serializable values were found in the navigation state',
+	])
+	const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>()
 	const [loading, setLoading] = useState<boolean>(false)
 	const {
 		loading: pubLoading,
@@ -22,7 +34,6 @@ const Store: React.FC<StoreProps> = ({}) => {
 	const { initPaymentSheet, presentPaymentSheet } = useStripe()
 
 	const handleItemPress = (amount: number) => {
-		console.log('loading')
 		setLoading(true)
 		fetchUserSecret({ variables: { planAmount: amount } })
 			.then(res =>
@@ -31,7 +42,6 @@ const Store: React.FC<StoreProps> = ({}) => {
 			.then(() => {
 				openPaymentSheet()
 				setLoading(false)
-				console.log('loading ended')
 			})
 			.catch(err => Alert.alert(err.message))
 	}
@@ -53,6 +63,10 @@ const Store: React.FC<StoreProps> = ({}) => {
 
 		if (error) {
 			Alert.alert(error.message)
+		} else {
+			route.params?.refetch()
+			navigation.navigate('Home')
+			Alert.alert('Payment successful have fun!')
 		}
 	}
 

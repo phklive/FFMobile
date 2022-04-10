@@ -13,8 +13,13 @@ import Spinner from '../ui/Spinner'
 import useAuth from '../utils/useAuth'
 import { FlatList } from 'react-native-gesture-handler'
 import { setting } from '../types'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
+import { ProfileStackParams } from '../navigation/Stack'
 
 const Profile: React.FC = ({}) => {
+	const navigation =
+		useNavigation<NativeStackNavigationProp<ProfileStackParams>>()
 	const { signOut } = useAuth()
 	const {
 		loading,
@@ -28,6 +33,12 @@ const Profile: React.FC = ({}) => {
 			color: '',
 			text: 'Disconnect',
 			onPress: () => signOutHandler(),
+		},
+		{
+			icon: 'notifications-outline',
+			color: '',
+			text: 'Notifications',
+			onPress: () => navigation.navigate('Notifications'),
 		},
 	]
 

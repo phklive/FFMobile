@@ -12,7 +12,7 @@ import Products from '../screens/Products'
 import Flash from '../screens/Flash'
 import Product from '../screens/Product'
 import Store from '../screens/Store'
-import Feed from '../screens/Feed'
+import Notifications from '../screens/Notifications'
 import Likes from '../screens/Likes'
 import Games from '../screens/Games'
 import Game from '../screens/Game'
@@ -27,9 +27,8 @@ export type AppParams = {
 
 export type HomeStackParams = {
 	Home: undefined
-	Feed: undefined
 	Likes: undefined
-	Store: undefined
+	Store?: { refetch: () => void }
 	Payment: { amount: number }
 	Products: { search: string }
 	Product: {
@@ -42,6 +41,7 @@ export type HomeStackParams = {
 
 export type ProfileStackParams = {
 	Profile: undefined
+	Notifications: undefined
 }
 
 export type LikeStackParams = {
@@ -85,7 +85,6 @@ const HomeStack: React.FC = () => (
 		<HomeNav.Screen name="Home" component={Home} />
 		<HomeNav.Screen name="Products" component={Products} />
 		<HomeNav.Screen name="Product" component={Product} />
-		<HomeNav.Screen name="Feed" component={Feed} />
 		<HomeNav.Screen name="Store" component={Store} />
 	</HomeNav.Navigator>
 )
@@ -98,6 +97,7 @@ const ProfileStack: React.FC = () => (
 		initialRouteName={'Profile'}
 	>
 		<ProfileNav.Screen name="Profile" component={Profile} />
+		<ProfileNav.Screen name="Notifications" component={Notifications} />
 	</ProfileNav.Navigator>
 )
 

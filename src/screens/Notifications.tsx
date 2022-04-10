@@ -9,7 +9,7 @@ import {
 } from '../generated/graphql'
 import Spinner from '../ui/Spinner'
 
-const Feed: React.FC = () => {
+const Notifications: React.FC = () => {
 	const { loading, error, data } = useMeQuery()
 
 	const renderItem: ListRenderItem<NotificationType> = ({ item }) => {
@@ -29,14 +29,14 @@ const Feed: React.FC = () => {
 		<>
 			<Text style={tw`text-center text-2xl`}>News</Text>
 			<View style={tw`flex-1`}>
-				<FlatList
+				{/* <FlatList
 					data={data?.me?.notifications as any}
 					renderItem={renderItem}
 					showsVerticalScrollIndicator={false}
-				/>
+				/> */}
 			</View>
 		</>
 	)
 }
 
-export default Feed
+export default Notifications
